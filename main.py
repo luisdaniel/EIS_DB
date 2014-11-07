@@ -1,12 +1,3 @@
-#    Sample main.py Tornado file
-#    (for Tornado on Heroku)
-#
-#    Author: Mike Dory | dory.me
-#    Created: 11.12.11 | Updated: 06.02.13
-#    Contributions by Tedb0t, gregory80
-#
-# ------------------------------------------
-
 #!/usr/bin/env python
 import os.path
 import tornado.escape
@@ -15,10 +6,26 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 
+
+#Mongo
+from mongoengine import *
+import models
+import bson
+from bson import json_util
+import csv
+import json
+import re
+import bcrypt
+from datetime import datetime
+from utils import *
+from handlers.handlers import *
+
 # import and define tornado-y things
 from tornado.options import define
 define("port", default=5000, help="run on the given port", type=int)
 
+#Connect to mongo
+connect('db', host=os.environ.get('MONGOLAB_URI'))
 
 # application settings and handle mapping info
 class Application(tornado.web.Application):
@@ -32,22 +39,6 @@ class Application(tornado.web.Application):
             debug=True,
         )
         tornado.web.Application.__init__(self, handlers, **settings)
-
-
-# the main page
-class MainHandler(tornado.web.RequestHandler):
-    def get(self, q):
-        if 'GOOGLEANALYTICSID' in os.environ:
-            google_analytics_id = os.environ['GOOGLEANALYTICSID']
-        else:
-            google_analytics_id = False
-
-        self.render(
-            "main.html",
-            page_title='Heroku Funtimes',
-            page_heading='Hi!',
-            google_analytics_id=google_analytics_id,
-        )
 
 
 # RAMMING SPEEEEEEED!

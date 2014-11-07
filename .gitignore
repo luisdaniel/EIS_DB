@@ -15,3 +15,8 @@ venv
 
 # silly stuff
 .svn
+
+#Top S
+.env
+.gitignore
+testing.ipynb
