@@ -21,7 +21,7 @@ from utils import *
 
 # the main page
 class MainHandler(tornado.web.RequestHandler):
-    def get(self, q):
+    def get(self):
     	#display first 100 reports
     	reports = models.Report.objects().only('title', 'eis_number', 'date_uploaded').order_by('-date_uploaded')[:100]
         self.render(

@@ -31,7 +31,7 @@ connect('db', host=os.environ.get('MONGOLAB_URI'))
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
-            (r"/([^/]+)?", MainHandler),
+            (r"/?", MainHandler),
             (r"/([0-9]{8})/?", ReportHandler),
             (r'/.*', NotFoundHandler)
         ]
