@@ -23,12 +23,16 @@ from utils import *
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
     	#display first 100 reports
-    	reports = models.Report.objects().only('title', 'eis_number', 'date_uploaded').order_by('-date_uploaded')[:100]
+    	display_from = int(self.get_argument("view", None))
+    	if not display_from or display_from < 0:
+    		display_from = 0
+    	reports = models.Report.objects().only('title', 'eis_number', 'date_uploaded').order_by('-date_uploaded')[display_from:display_from+100]
         self.render(
             "index.html",
             page_title='Heroku Funtimes',
             page_heading='Hi!',
-            reports = reports
+            reports = reports,
+            display_from=display_from
         )
 
 class ReportHandler(tornado.web.RequestHandler):
@@ -36,15 +40,16 @@ class ReportHandler(tornado.web.RequestHandler):
 		try:
 			logging.info("getting: " + str(eis))
 			report = models.Report.objects.get(eis_number=eis)
+		except Exception, e:
+			logging.info("Could not get report: " + str(e))
+			self.redirect('/404/')
+		if report:
 			self.render(
 	            "report.html",
 	            page_title='Heroku Funtimes',
 	            page_heading='Hi!',
 	            report = report
 	        )
-		except Exception, e:
-			logging.info("Could not get report: " + str(e))
-			self.redirect('/404/')
 
 class NotFoundHandler(tornado.web.RequestHandler):
     def get(self):

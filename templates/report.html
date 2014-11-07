@@ -6,8 +6,72 @@
 
 <h2>{{report.title}}</h2>
 
-<p>
+<p><strong>Lead Agency</strong>: {{ ', '.join(report.agency) }}</p>
+<p><strong>Date</strong>: {{report.date_uploaded.strftime('%m/%d/%Y')}}</p>
+<p><strong>Website</strong>: {{report.website}}</p>
+<p><strong>State(s)</strong>: {{ ', '.join(report.state) }}</p>
+<p><strong>Contact Name</strong>: {{report.contact_name}}</p>
+<p><strong>Contact Phone</strong>: {{report.contact_phone}}</p>
+<p><strong>Document Type</strong>: {{report.document_type}}</p>
+<p><strong>Federal Register Date</strong>: {{report.federal_register_date.strftime('%m/%d/%Y')}}</p>
+<p><strong>EIS Comment Due/ Review Period Date</strong>: {% if report.comment_due_review_date %} {{report.comment_due_review_date.strftime('%m/%d/%Y')}} {%end%}</p>
+<p><strong>Amended Notice Date</strong>: {% if report.amended_notice_date %}{{report.amended_notice_date.strftime('%m/%d/%Y')}} {%end%}</p>
+<p><strong>Amended Notice</strong>: {{report.amended_notice}}</p>
+<p><strong>Supplemental Information</strong>: {{report.supplemental_info}}</p>
+<p><strong>Comment Letter Date</strong>: {% if report.comment_letter_date %} {{report.comment_letter_date.strftime('%m/%d/%Y')}} {%end%}</p>
+<p><strong>Rating, if Draft EIS</strong>: {{report.rating}}</p>
 
+{% if report.comment_letters %}
+	<h2>Comment Letters</h2>
+	<table class="table table-striped table-hover">
+		<thead>
+		<tr>
+			<th>#</th>
+			<th>Last Modified</th>
+			<th>Size</th>
+			<th>Title</th>
+		</tr>
+		</thead>
+		<tbody>
+			{% for i, letter in enumerate(report.comment_letters) %}
+				<tr>
+					<td>{{i+1}}</td>
+					<td>{{letter.last_modified.strftime('%m/%d/%Y')}}</td>
+					<td>{{ letter.content_length / 1000000 }} mb</td>
+					<td><a href="{{letter.file_url_s3}}">Comment Letter</a></td>
+				</tr>
+			{%end %}
+		</tbody>
+	</table>
+{% else %}
+{% end %}
+
+
+{% if report.report_files %}
+	<h2>Report Files</h2>
+	<table class="table table-striped table-hover">
+		<thead>
+		<tr>
+			<th>#</th>
+			<th>Last Modified</th>
+			<th>Size</th>
+			<th>Title</th>
+		</tr>
+		</thead>
+		<tbody>
+			{% for i, file in enumerate(report.report_files) %}
+				<tr>
+					<td>{{i+1}}</td>
+					<td>{%if file.last_modified %}{{ file.last_modified.strftime('%m/%d/%Y')}}{%end%}</td>
+					<td>{{ file.content_length / 1000000 }} mb</td>
+					<td><a href="{{file.file_url_s3}}">{{file.title}}</a></td>
+				</tr>
+			{%end %}
+		</tbody>
+	</table>
+{% else %}
+	<h2>No Files</h2>
+{% end %}
 
 
 {%end%}
