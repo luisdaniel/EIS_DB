@@ -23,7 +23,7 @@ from utils import *
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
     	#display first 100 reports
-    	display_from = int(self.get_argument("view", None))
+    	display_from = int(self.get_argument("view", 0))
     	if not display_from or display_from < 0:
     		display_from = 0
     	reports = models.Report.objects().only('title', 'eis_number', 'date_uploaded').order_by('-date_uploaded')[display_from:display_from+100]
