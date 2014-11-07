@@ -23,7 +23,7 @@ from utils import *
 class MainHandler(tornado.web.RequestHandler):
     def get(self, q):
     	#display first 100 reports
-    	reports = models.Report.objects().only('title', 'eis_number', 'date_uploaded')
+    	reports = models.Report.objects().only('title', 'eis_number', 'date_uploaded').order_by('-date_uploaded')[:100]
         self.render(
             "index.html",
             page_title='Heroku Funtimes',
@@ -34,6 +34,7 @@ class MainHandler(tornado.web.RequestHandler):
 class ReportHandler(tornado.web.RequestHandler):
 	def get(self, eis):
 		try:
+			logging.info("getting: " + str(eis))
 			report = models.Report.objects.get(eis_number=eis)
 			self.render(
 	            "report.html",
@@ -43,8 +44,12 @@ class ReportHandler(tornado.web.RequestHandler):
 	        )
 		except Exception, e:
 			logging.info("Could not get report: " + str(e))
-			self.render(
-	            "404.html",
-	            page_title='Not Found',
-	            page_heading='EIS Report not found'
-	        )
+			self.redirect('/404/')
+
+class NotFoundHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render(
+            "404.html",
+            page_title='404 - Not Found',
+            page_heading='Not Found',
+        )
