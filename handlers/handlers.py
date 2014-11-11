@@ -55,7 +55,7 @@ class SearchHandler(tornado.web.RequestHandler):
                     "fields":['title'],
                     "query":query
                 }
-            }}, ignore=[400, 404], size=50)
+            }}, ignore=[400, 404], size=5000)
             results = [r['_source']['eis_number'] for r in res['hits']['hits']]
             reports = []
             for r in results:
