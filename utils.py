@@ -28,5 +28,5 @@ class Search(object):
 					"query":query
 				}
 			}
-		}, ignore=[400, 404], size=5000)
-		return {"results":res['hits']['hits'][from_:from_+size], "size":res['hits']['total']}
+		}, ignore=[400, 404], from_=from_, size=size)
+		return {"results":res['hits']['hits'], "size":res['hits']['total']}

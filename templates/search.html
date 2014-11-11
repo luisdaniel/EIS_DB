@@ -11,10 +11,12 @@
 {% if query %}
 	<p>Found: {{results['size']}} results for "{{query}}"</p>
 	<p>Viewing: {{display_from+1}} to {% if display_from+display_num > results['size'] %}{{results['size']}}{%else%}{{display_from + display_num}}{%end%}</p>
-	{% if display_from == 0 %}
-		<p><a href="?query={{query}}&view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a>
-	{% else %}
-		<a href="?query={{query}}&view={{display_from - display_num}}&display={{display_num}}">Previous {{display_num}}</a> ... <a href="?query={{query}}&view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a></p>
+	{%if results['size'] > display_num %}
+		{% if display_from == 0 or display_from < display_num %}
+			<p><a href="?query={{query}}&view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a>
+		{% else %}
+			<a href="?query={{query}}&view={{display_from - display_num}}&display={{display_num}}">Previous {{display_num}}</a> {% if display_num < results['size'] - display_from %}... <a href="?query={{query}}&view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a>{%end%}</p>
+		{%end%}
 	{%end%}
 
 <div class="table-responsive">
