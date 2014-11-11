@@ -25,6 +25,7 @@ from elasticsearch import Elasticsearch as ES, RequestsHttpConnection as RC
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
     	#display first 100 reports
+        logging.info(ES_HOST)
     	display_from = int(self.get_argument("view", 0))
         display_num = int(self.get_argument("display", 100))
     	if not display_from or display_from < 0:
@@ -46,9 +47,9 @@ class SearchHandler(tornado.web.RequestHandler):
         if not query:
             reports = None
         else:
-            logging.info(query)
-            host_params = {'host':'ec2-54-88-57-122.compute-1.amazonaws.com', 'port':80, 'use_ssl':False}
-            es = ES([host_params], connection_class=RC, http_auth=('thegovlab', 'wagner123!'),  use_ssl=False)
+            logging.info(ES_HOST)
+            host_params = {'host':os.environ.get('ES_HOST'), 'port':80, 'use_ssl':False}
+            es = ES([host_params], connection_class=RC, http_auth=(ES_USER, ES_PASS),  use_ssl=False)
             res = es.search(index="eis", body={"query": {
                 "query_string":{
                     "fields":['title'],

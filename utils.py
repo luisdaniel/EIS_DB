@@ -11,6 +11,11 @@ import numpy as np
 import re
 import bson
 
+ES_USER=os.environ.get('ES_USER')
+ES_PASS=os.environ.get('ES_PASS')
+ES_HOST=os.environ.get('ES_HOST')
+
+
 class PDFProcesser(object):
 	def extract_text(self, filename):
 		#code for stuff
