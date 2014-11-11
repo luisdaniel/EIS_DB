@@ -36,6 +36,7 @@ class Application(tornado.web.Application):
             (r"/search/?", SearchHandler),
             (r'/.*', NotFoundHandler)
         ]
+        self.search = Search()
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),

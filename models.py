@@ -47,6 +47,8 @@ class ReportFile(EmbeddedDocument):
 	last_modified = DateTimeField() #last modified, according to HTTP header
 	title = StringField() #title of report file
 
+
+#Will try to store PDF's as their own documents. 
 class EIS_File(Document):
 	content_length = IntField() #Size of the document
 	content_type = StringField() #according to HTTP header, should be PDF
@@ -58,6 +60,9 @@ class EIS_File(Document):
 	eis_number = StringField()
 	report_title = StringField()
 
+	meta = {
+        'indexes': ['eis_number', 'file_url_s3']
+    }
 
 #------------------------------------------NOTES-----------------------------------
 #Sometimes you have multiple agencies and multiple states invovled.
