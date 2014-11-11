@@ -26,6 +26,10 @@ class Report(Document):
 	title = StringField(max_length=600) #Title of report
 	website = StringField() #website
 
+	meta = {
+        'indexes': ['eis_number', 'title']
+    }
+
 class CommentLetter(EmbeddedDocument):
 	content_length = IntField() #Size of the document
 	content_type = StringField() #according to HTTP header, should be PDF
@@ -42,6 +46,17 @@ class ReportFile(EmbeddedDocument):
 	file_url_s3 = StringField() #link to file on S3 bucket
 	last_modified = DateTimeField() #last modified, according to HTTP header
 	title = StringField() #title of report file
+
+class EIS_File(Document):
+	content_length = IntField() #Size of the document
+	content_type = StringField() #according to HTTP header, should be PDF
+	date_retrieved = DateTimeField() #Date I retrieved this from EPA
+	file_url_epa = StringField() #link to file on EPA's site
+	file_url_s3 = StringField() #link to file on S3 bucket
+	last_modified = DateTimeField() #last modified, according to HTTP header
+	file_title = StringField() #title of report file
+	eis_number = StringField()
+	report_title = StringField()
 
 
 #------------------------------------------NOTES-----------------------------------

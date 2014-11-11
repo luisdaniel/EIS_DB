@@ -33,6 +33,7 @@ class Application(tornado.web.Application):
         handlers = [
             (r"/?", MainHandler),
             (r"/([0-9]{8})/?", ReportHandler),
+            (r"/search/?", SearchHandler),
             (r'/.*', NotFoundHandler)
         ]
         settings = dict(

@@ -3,3 +3,5 @@ Mongoengine
 py-bcrypt
 numpy
 nltk
+elasticsearch
+requests

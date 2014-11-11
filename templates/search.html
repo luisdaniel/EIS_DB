@@ -7,14 +7,17 @@
 <h1 class="page-header">Environmental Impact Statements</h1>
 <h2 class="sub-header">Reports</h2>
 <form class="form-horizontal">
-	<input type="text" class="form-control" id="search-reports" placeholder="Search...">
+	<input type="text" class="form-control" id="search-reports" name="query" placeholder="Search...">
 </form>
-<p>Viewing: {{display_from}} to {{display_from + display_num - 1}}</p>
-{% if display_from == 1 %}
-	<p><a href="/?view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a>
-{% else %}
-	<a href="/?view={{display_from - display_num}}&display={{display_num}}">Previous {{display_num}}</a> ... <a href="/?view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a></p>
-{%end%}
+{% if reports %}
+	<p>Found: {{len(reports)}} results</p>
+	<p>Viewing: {{display_from}} to {{display_from + display_num - 1}}</p>
+	{% if display_from == 1 %}
+		<p><a href="/?view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a>
+	{% else %}
+		<a href="/?view={{display_from - display_num}}&display={{display_num}}">Previous {{display_num}}</a> ... <a href="/?view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a></p>
+	{%end%}
+
 <div class="table-responsive">
 <table class="table table-striped table-hover">
 	<thead>
@@ -39,6 +42,8 @@
 
 </div>
 
-
+{%else%}
+<h2>No resulrs found</h2>
+{%end%}
 
 {%end%}
