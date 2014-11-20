@@ -46,45 +46,7 @@
 {%else%}
 {%end%}
 
-<script type='text/template' id='report-template'>
-	<tr class="report-table-row">
-		<td class="result-number"></td>
-		<td class="report-date"><%= date %></td>
-		<td class="report-eis-number"><%= eis_number %></td>
-		<td class="report-title"><a href="/<%= eis_number %>/"><%= title %></a></td>
-	</tr>
-</script>
 
-<script type="text/javascript">
-
-$(document).ready( function() {
-	var results = []
-	var report = _.template($("#report-template").html());
-
-	$('#container').on("click", "#submit", function() {
-		var query =  $('#search-reports').val();
-		$.ajax({
-			type: 'POST',
-			url: '/search/',
-			data: { "query":query },
-			error: function(error) {
-				console.debug(JSON.stringify(error));
-				$(".error_message").text("Something went wrong :(").show().delay(5000).fadeOut();
-			},
-			beforeSend: function(xhr, settings) {
-			},
-			success: function(response) {
-				var obj = jQuery.parseJSON(response);
-				$.each(obj, function(key,value) {
-					data = {"report_num":key, "date":value['date'], "eis_number":value['eis_number'], "title":value['title']};
-					$(".report-rows").append(report(data));
-				});
-			}
-		});
-	});
-
-});
-</script>
 
 
 

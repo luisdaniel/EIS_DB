@@ -6,11 +6,11 @@
 
 <h1 class="page-header">Environmental Impact Statements</h1>
 <h2 class="sub-header">Reports</h2>
-<form class="form-horizontal">
+<form class="form-horizontal" action="/search/">
 	<input type="text" class="form-control" id="search-reports" placeholder="Search...">
 </form>
-<p>Viewing: {{display_from}} to {{display_from + display_num - 1}}</p>
-{% if display_from == 1 %}
+<p>Viewing: {{display_from+1}} to {{display_from + display_num }}</p>
+{% if display_from == 0 %}
 	<p><a href="/?view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a>
 {% else %}
 	<a href="/?view={{display_from - display_num}}&display={{display_num}}">Previous {{display_num}}</a> ... <a href="/?view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a></p>
@@ -28,7 +28,7 @@
 	<tbody>
 		{%for i, report in enumerate(reports) %}
 			<tr>
-				<td>{{display_from + i}}</td>
+				<td>{{display_from + i+1}}</td>
 				<td>{{report.date_uploaded.strftime('%m/%d/%Y')}}</td>
 				<td>{{report.eis_number}}</td>
 				<td><a href="/{{report.eis_number}}/">{{report.title}}</a></td>
