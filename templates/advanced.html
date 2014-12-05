@@ -1,0 +1,47 @@
+{% extends "main.html" %}
+{% autoescape None %}
+
+{% block body %}
+
+<h1 class="page-header">Environmental Impact Statements</h1>
+<h2 class="sub-header">Advanced Search</h2>
+<form class="form-horizontal">
+	<input type="text" class="form-control" id="search-reports" name="query" placeholder="Search...">
+	<div class="checkbox">
+    <label>
+      <input type="checkbox"> Include Report Files
+    </label>
+  </div>
+</form>
+{% if query %}
+	<p>Found: {{total_hits}} results for "{{query}}"</p>
+	<p>Viewing: {{display_from+1}} to {% if display_from+display_num > total_hits %}{{total_hits}}{%else%}{{display_from + display_num}}{%end%}</p>
+	{%if total_hits > display_num %}
+		{% if display_from == 0 or display_from < display_num %}
+			<p><a href="?query={{query}}&view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a>
+		{% else %}
+			<a href="?query={{query}}&view={{display_from - display_num}}&display={{display_num}}">Previous {{display_num}}</a> {% if display_num < total_hits - display_from %}... <a href="?query={{query}}&view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a>{%end%}</p>
+		{%end%}
+	{%end%}
+
+	{%for i, r in enumerate(results) %}
+		<div class="row">
+			<div class="col-md-12">
+				<a href="/{{r['eis']}}/">{{r['title']}}</a> - <strong>{{r['file_title']}}</strong>
+			</div>
+			<div class="col-md-8 col-md-offset-1">
+				{% for h in r['highlights'] %}
+					<p>{{h}}</p>
+				{% end %}
+			</div>
+		</div>
+	{%end%}
+
+{%else%}
+{%end%}
+
+
+
+
+
+{%end%}

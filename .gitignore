@@ -21,3 +21,4 @@ venv
 .gitignore
 testing.ipynb
 *.ipynb
+.*

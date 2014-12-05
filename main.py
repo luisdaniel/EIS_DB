@@ -34,9 +34,11 @@ class Application(tornado.web.Application):
             (r"/?", MainHandler),
             (r"/([0-9]{8})/?", ReportHandler),
             (r"/search/?", SearchHandler),
+            (r"/advanced/?", AdvancedSearchHandler),
             (r'/.*', NotFoundHandler)
         ]
         self.search = Search()
+        self.tools = Tools()
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),

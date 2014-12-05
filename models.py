@@ -26,9 +26,6 @@ class Report(Document):
 	title = StringField(max_length=600) #Title of report
 	website = StringField() #website
 
-	meta = {
-        'indexes': ['eis_number', 'title']
-    }
 
 class CommentLetter(EmbeddedDocument):
 	content_length = IntField() #Size of the document
@@ -60,14 +57,12 @@ class EIS_File(Document):
 	eis_number = StringField()
 	report_title = StringField()
 
-	meta = {
-        'indexes': ['eis_number', 'file_url_s3']
-    }
 
-#------------------------------------------NOTES-----------------------------------
+#------------------------------------------NOTES------------------------------
 #Sometimes you have multiple agencies and multiple states invovled.
 #For now multi states and agencies are listed as "00" or "Multi" respectively
-#But the possibility is left open for appending agencies and states to the field.
+#But the possibility is left open for appending agencies and states to the 
+#field.
 
 #There is a handful of repeated reports. Can be found with same title and EIS #
 #No conflicting info, so can be merged. 
