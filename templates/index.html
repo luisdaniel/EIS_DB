@@ -6,15 +6,14 @@
 
 <h1 class="page-header">Environmental Impact Statements</h1>
 <h2 class="sub-header">Reports</h2>
-<form class="form-horizontal" action="/search/">
-	<input type="text" class="form-control" id="search-reports" placeholder="Search...">
-</form>
-<p>Viewing: {{display_from+1}} to {{display_from + display_num }}</p>
+
+<p>Viewing: {{display_from+1}} to {{display_from + display_num }} | 
 {% if display_from == 0 %}
-	<p><a href="/?view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a>
+	<a href="/?view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a>
 {% else %}
-	<a href="/?view={{display_from - display_num}}&display={{display_num}}">Previous {{display_num}}</a> ... <a href="/?view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a></p>
+	<a href="/?view={{display_from - display_num}}&display={{display_num}}">Previous {{display_num}}</a> ... <a href="/?view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a>
 {%end%}
+</p>
 <div class="table-responsive">
 <table class="table table-striped table-hover">
 	<thead>

@@ -15,7 +15,8 @@
     <title>{{ page_title }}</title>
     <link rel="stylesheet" href="{{ static_url("css/style.css") }}" />
     <link rel="stylesheet" href="{{ static_url("css/libs/normalize/normalize.css") }}" />
-    <script src="{{ static_url("js/jquery-2.1.0.min.js") }}"></script>
+    <link rel="stylesheet" href="{{ static_url("js/jquery-ui-1.11.2.custom/jquery-ui.min.css") }}">
+    <link rel="stylesheet" href="{{ static_url("js/jquery-ui-1.11.2.custom/jquery-ui.theme.min.css") }}">
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -45,6 +46,7 @@
                 <div id="navbar" class="navbar-collapse collapse">
                   <ul class="nav navbar-nav navbar-right">
                     <li><a href="/search/">Search</a></li>
+                    <li><a href="/advanced/">Advanced Search</a></li>
                     <li><a href="#">About</a></li>
                     <li><a href="#">Help</a></li>
                   </ul>
@@ -57,6 +59,7 @@
                     <div class="col-sm-3 col-md-2 sidebar">
                       <ul class="nav nav-sidebar">
                         <li><a href="/search/">Search</a></li>
+                        <li><a href="/advanced/">Advanced Search</a></li>
                         <li><a href="/">All Reports</a></li>
                         <li><a href="#">About</a></li>
                       </ul>
@@ -74,6 +77,7 @@
 
     <!-- Load jQuery -->
     <script src="{{ static_url("js/jquery-2.1.0.min.js") }}"></script>
+    <script src="{{ static_url("js/jquery-ui-1.11.2.custom/jquery-ui.js") }}"></script>
     <script src="{{ static_url("js/bootstrap.min.js") }}"></script>
     <script src="{{ static_url("js/docs.min.js") }}"></script>
     <!-- plugins -->

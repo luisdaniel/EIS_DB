@@ -44,23 +44,35 @@ class MainHandler(tornado.web.RequestHandler):
 
 class SearchHandler(tornado.web.RequestHandler):
     def get(self):
-        query = self.get_argument("query", None)
-        display_from = int(self.get_argument("view", 0))
-        display_num = int(self.get_argument("display", 100))
-        if not query:
+        search_params = {
+            "query": self.get_argument("query", None),
+            "state": self.get_argument("state", None),
+            "agency": self.get_argument("agency", None),
+            "date_form": self.get_argument("date_from", None),
+            "date_to": self.get_argument("date_to", None),
+            "include_letters": self.get_argument("include_letters", None),
+            "final_eis_only": self.get_argument("final_eis_only", None),
+            "display_from": int(self.get_argument("view", 0)),
+            "display_num": int(self.get_argument("display", 100))}
+        if not search_params['query']:
             results = None
+            total_hits = None
         else:
-            results = self.application.search.search(
-                query, 
-                display_from, 
-                display_num)
+            results = self.application.search.search(search_params)
+            total_hits = results['total_hits']
+            results = results['hits']
         self.render(
             "search.html",
             page_title='Search EI Statements',
             results = results,
-            display_from=display_from,
-            display_num=display_num,
-            query=query
+            states = states,
+            state_abbrev_list=state_abbrev_list,
+            agencies=agencies,
+            agencies_abbrev_list=agencies_abbrev_list,
+            total_hits = total_hits,
+            display_from=search_params['display_from'],
+            display_num=search_params['display_num'],
+            query=search_params['query']
         )
 
 class ReportHandler(tornado.web.RequestHandler):
@@ -88,19 +100,13 @@ class AdvancedSearchHandler(tornado.web.RequestHandler):
             results = None
             total_hits = None
         else:
-            tic = timeit.default_timer()
             results = self.application.search.advancedSearch(
                 query, 
                 display_from, 
                 display_num)
-            toc = timeit.default_timer()
-            logging.info("Query time: " + str(toc-tic))
             total_hits = results['total_hits']
-            tic = timeit.default_timer()
             results = self.application.tools.pack_search_results(
                 results['hits'])
-            toc = timeit.default_timer()
-            logging.info("Packing time: " + str(toc-tic))
         self.render(
             'advanced.html',
             page_title="Advanced Search",

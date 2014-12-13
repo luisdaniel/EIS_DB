@@ -43,24 +43,129 @@ states = {
 		"PR": "Puerto Rico"
 	}
 
+state_abbrev_list = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", 
+                "GA", "HI", "ID", "IL", "IN", "IA", "KA", "KY", "LA", "ME", "MD", 
+                "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", 
+                "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", 
+                "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+
+agencies = {
+		'BPA':'Bonneville Power Administration',
+		'FSA':'',
+		'FERC':'Federal Energy Regulatory Commission',
+		'DOI':'Department of the Interior',
+		'BR':'',
+		'USA':'',
+		'USN':'',
+		'USAF':'US Air Force',
+		'DOE':'Department of Energy',
+		'GSA':'General Services Administration',
+		'BOEM':'Bureau of Ocean Energy Management',
+		'USCG':'US Coast Guard',
+		'NPS':'National Park Service',
+		'EPA':'Environmental Protection Agency',
+		'DOS':'Department of State',
+		'USMC':'US Marine Corps',
+		'DOT':'Department of Transportation',
+		'HUD':'',
+		'NSF':'National Science Foundation',
+		'BIA':'Bureau of lndian Affairs',
+		'OSM':'Office of Surface Mining Reclamation and Enforcement',
+		'DOC':'Department of Commerce',
+		'NNSA':'National Nuclear Security Administration',
+		'FAA':'Federal Aviation Administration',
+		'AFS':'',
+		'VA':'Veterans Affairs',
+		'FRA':'Federal Railroad Administration',
+		'USDA':'US Department of Agriculture',
+		'STB':'Surface Transportation Board',
+		'NHTSA':'National Highway Traffic Safety Administration',
+		'FHWA':'Federal HighwayAdministration',
+		'FTA':'Federal Transit Administration',
+		'WAPA':'Western Area Power Administration',
+		'NMFS':'National Marine Fisheries Services ',
+		'NRCS':'Natural Resources Conservation Service',
+		'APHIS':'Animal and Plant Inspection Service',
+		'BLM':'Bureau of Land Management',
+		'NOAA':'National Oceanic and Atmospheric Administration',
+		'WAP':'',
+		'HHS':'Department of Health and Human Services',
+		'NIH':'National Institutes of Health',
+		'USACE':'US Army Corps of Engineers',
+		'USFWS':'Us Fish and Wildlife Service',
+		'USFS':'US Forrest Service',
+		'NRC':'Nuclear Regulatory Commission',
+		'USPS':'US Postal Service',
+		'NASA':'National Aeronautics and Space Administration',
+		'RUS':'',
+		'NPS':''
+}
+
+agencies_abbrev_list = [
+	'AFS', 'APHIS', 'BIA', 'BLM', 'BOEM', 'BPA', 'BR', 'DOC', 'DOE', 'DOI', 
+	'DOS', 'DOT', 'EPA', 'FAA', 'FERC', 'FHWA', 'FRA', 'FSA', 'FTA', 'GSA', 
+	'HHS', 'HUD', 'NASA', 'NHTSA', 'NIH', 'NMFS', 'NNSA', 'NOAA', 'NPS', 'NRC', 
+	'NRCS', 'NSF', 'OSM', 'RUS', 'STB', 'USA', 'USACE', 'USAF', 'USCG', 'USDA', 
+	'USFS', 'USFWS', 'USMC', 'USN', 'USPS', 'VA', 'WAP', 'WAPA']
 
 
 class Search(object):
-	def search(self, query, from_, size):
-		res = es.search(index="eis", body={
-			"query": {
-				"query_string":{
-					"fields":['title', 'state', 'agency'],
-					"query":query
-				}
+	def search(self, search_params):
+		res = es.search(
+		    index="impactstatement", 
+		    fields = ['title', 'state_abbrev', 'agency_abbrev', 'date', 'eis_number'],
+			body={
+			    "query": {
+			        "has_child" : {
+			            "type":"eis_file",
+			            "score_mode":"max",
+			            "query": {
+			                "bool":{
+			                    "should": [
+			                        {
+			                            "match": {
+			                                "title": {
+			                                    "query":search_params['query'], 
+			                                    "minimum_should_match":"75%",
+			                                    "boost":10
+			                                }
+			                            }
+			                        }, {
+			                            "has_child": {
+			                                "type":"eis_file",
+			                                "score_mode":"max",
+			                                "query": {
+			                                    "match":{
+			                                        "file": {
+			                                            "query":search_params['query'],
+			                                            "minimum_should_match":"90%",
+			                                            "boost":1
+			                                        }
+			                                    }
+			                                }
+			                            }
+			                        }
+			                    ]
+			                            
+			                }
+			            }
+			        }
+			    },
+			}, 
+		    ignore=[400, 404], 
+		    from_=search_params["display_from"], 
+		    size=search_params['display_num'])
+		res['hits']['hits']
+		return {
+				"hits":res['hits']['hits'], 
+				"total_hits":res['hits']['total']
 			}
-		}, ignore=[400, 404], from_=from_, size=size)
-		return {"results":res['hits']['hits'], "size":res['hits']['total']}
 
 	def advancedSearch(self, query, from_, size):
 		query.replace(" and ", " AND ")
 		res = es.search(
-			index='eistxt', 
+			index='eistxt',
+
 			fields=["file_url", "eis", "title"], 
 			body={
 		      "query" : {
@@ -89,7 +194,8 @@ class Tools(object):
 						'eis_number': {
 							'$in': eis
 						}
-					}).only('title', 'eis_number')
+					}).only('title',
+					'eis_number')
 		titles = {}
 		for r in reports:
 		    titles[r.eis_number] = r.title
@@ -102,15 +208,5 @@ class Tools(object):
 		        "highlights": [h for h in r['highlight']['file']]
 		    })
 		return reports
-
-
-
-
-
-
-
-
-
-
 
 

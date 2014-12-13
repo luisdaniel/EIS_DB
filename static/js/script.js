@@ -1,9 +1,14 @@
-/*
-    Sample script.js JavaScript file
+$(document).ready(function() {
 
-    Author: Mike Dory
-    11.12.11, updated 11.24.12
-*/
+	$(function() {
+    	$( "#filter-date-range-from" ).datepicker();
+	});
+
+	$(function() {
+    	$( "#filter-date-range-to" ).datepicker();
+	});
 
 
-// your fancy JS code goes here!
+
+
+});
