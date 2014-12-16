@@ -141,7 +141,7 @@ class AdvancedSearchHandler(tornado.web.RequestHandler):
             results = self.application.tools.pack_search_results(
                 results['hits'])
         self.render(
-            'advanced.html',
+            'search_files.html',
             page_title="Advanced Search",
             page_heading="Advanced Search",
             results = results,

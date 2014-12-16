@@ -4,14 +4,11 @@
 {% block body %}
 
 <h1 class="page-header">Environmental Impact Statements</h1>
-<h2 class="sub-header">Advanced Search</h2>
+<h2 class="sub-header">Search within impact statements</h2>
 <form class="form-horizontal">
-	<input type="text" class="form-control" id="search-reports" name="query" placeholder="Search...">
-	<div class="checkbox">
-    <label>
-      <input type="checkbox"> Include Report Files
-    </label>
-  </div>
+	<div class="form-group">
+		<input type="text" class="form-control" id="search-reports" name="query" placeholder="Search...">
+	</div>
 </form>
 {% if query %}
 	<p>Found: {{total_hits}} results for "{{query}}"</p>

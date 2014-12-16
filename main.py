@@ -34,7 +34,7 @@ class Application(tornado.web.Application):
             (r"/?", MainHandler),
             (r"/([0-9]{8})/?", ReportHandler),
             (r"/search/?", SearchHandler),
-            (r"/advanced/?", AdvancedSearchHandler),
+            (r"/search-files/?", AdvancedSearchHandler),
             (r'/.*', NotFoundHandler)
         ]
         self.search = Search()
