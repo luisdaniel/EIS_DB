@@ -14,4 +14,8 @@ $(document).ready(function() {
         "filter": 	false
     });
 
+    $('.report-filters').on('click', '#clear-filters', function() {
+        window.location.replace("/");
+    });
+
 });
