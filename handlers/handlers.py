@@ -24,15 +24,32 @@ import timeit
 # the main page
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-    	#display first 100 reports
-        logging.info(ES_HOST)
     	display_from = int(self.get_argument("view", 0))
         display_num = int(self.get_argument("display", 100))
-    	reports = models.Report.objects().only(
+        state = self.get_argument("state", "")
+        agency = self.get_argument("agency", "")
+        date_from = self.get_argument("date_from", "")
+        date_to = self.get_argument("date_to", "")
+        if date_from:
+            date_from_f = datetime.strptime(date_from, "%m/%d/%Y").strftime("%Y-%m-%d")
+        else:
+            date_from_f = "1900-01-01"
+        if date_to:
+            date_to_f = datetime.strptime(date_to, "%m/%d/%Y").strftime("%Y-%m-%d")
+        else:
+            date_to_f = "2030-01-01"
+    	reports = models.Report.objects(
+            Q(state__contains=state) & 
+            Q(agency__contains=agency) & 
+            Q(federal_register_date__gte=date_from_f) &
+            Q(federal_register_date__lte=date_to_f)).only(
             'title', 
             'eis_number',
             'federal_register_date').order_by(
-            '-federal_register_date')[display_from:display_from+display_num]
+            '-federal_register_date')
+        total_hits = len(reports)
+        reports = reports[display_from:display_from+display_num]
+        total_reports = models.Report.objects().count()
         self.render(
             "index.html",
             page_title='Heroku Funtimes',
@@ -43,38 +60,10 @@ class MainHandler(tornado.web.RequestHandler):
             agencies=agencies,
             agencies_abbrev_list=agencies_abbrev_list,
             display_from=display_from,
-            display_num=display_num
-        )
-
-    def post(self):
-        state = self.get_argument("state", None)
-        agency = self.get_argument("agency", None)
-        date_from = self.get_argument("date_from", None)
-        date_from = self.get_argument("date_from", None)
-        if date_from:
-            datetime.strptime(date_from, "%m/%d/%Y").strftime("%Y-%m-%d")
-        if date_to:
-            datetime.strptime(date_to, "%m/%d/%Y").strftime("%Y-%m-%d")
-        reports = models.Report.objects(
-            Q(state__contains=state) & 
-            Q(agency__contains=agency) & 
-            Q(federal_register_date__gte=date_from) &
-            Q(federal_register_date__lte=date_to)).only(
-            'title', 
-            'eis_number',
-            'federal_register_date').order_by(
-            '-federal_register_date')[display_from:display_from+display_num]
-        self.render(
-            "index.html",
-            page_title='EPA EIS DB',
-            page_heading='Hi!',
-            reports = reports,
-            states = states,
-            state_abbrev_list=state_abbrev_list,
-            agencies=agencies,
-            agencies_abbrev_list=agencies_abbrev_list,
-            display_from=display_from,
-            display_num=display_num
+            display_num=display_num,
+            total_hits=total_hits,
+            total_reports=total_reports,
+            q = {"s":state, "a":agency, "df":date_from, "dt":date_to}
         )
 
 class SearchHandler(tornado.web.RequestHandler):

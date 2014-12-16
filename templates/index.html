@@ -7,12 +7,15 @@
 <h1 class="page-header">Environmental Impact Statements</h1>
 <h2 class="sub-header">Reports</h2>
 
-<p>Viewing: {{display_from+1}} to {{display_from + display_num }} | 
-{% if display_from == 0 %}
-	<a href="/?view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a>
-{% else %}
-	<a href="/?view={{display_from - display_num}}&display={{display_num}}">Previous {{display_num}}</a> ... <a href="/?view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a>
-{%end%}
+<p>Showing: {{total_hits}} reports (out of {{total_reports}})</p>
+<p>Viewing: {{display_from+1}} to {% if display_from+display_num > total_hits %}{{total_hits}}{%else%}{{display_from + display_num}}{%end%}
+	{%if total_hits > display_num %}
+		{% if display_from == 0 or display_from < display_num %}
+			<a href="?state={{q['s']}}&agency={{q['a']}}&date_from={{q['df']}}&date_to{{q['dt']}}&view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a>
+		{% else %}
+			<a href="?state={{q['s']}}&agency={{q['a']}}&date_from={{q['df']}}&date_to{{q['dt']}}&view={{display_from - display_num}}&display={{display_num}}">Previous {{display_num}}</a> {% if display_num < total_hits - display_from %}... <a href="?state={{q['s']}}&agency={{q['a']}}&date_from={{q['df']}}&date_to{{q['dt']}}&view={{display_from + display_num}}&display={{display_num}}">Next {{display_num}}</a>{%end%}
+		{%end%}
+	{%end%}
 </p>
 
 <div class="report-filters">
