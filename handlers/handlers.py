@@ -31,13 +31,48 @@ class MainHandler(tornado.web.RequestHandler):
     	reports = models.Report.objects().only(
             'title', 
             'eis_number',
-            'date_uploaded').order_by(
-            '-date_uploaded')[display_from:display_from+display_num]
+            'federal_register_date').order_by(
+            '-federal_register_date')[display_from:display_from+display_num]
         self.render(
             "index.html",
             page_title='Heroku Funtimes',
             page_heading='Hi!',
             reports = reports,
+            states = states,
+            state_abbrev_list=state_abbrev_list,
+            agencies=agencies,
+            agencies_abbrev_list=agencies_abbrev_list,
+            display_from=display_from,
+            display_num=display_num
+        )
+
+    def post(self):
+        state = self.get_argument("state", None)
+        agency = self.get_argument("agency", None)
+        date_from = self.get_argument("date_from", None)
+        date_from = self.get_argument("date_from", None)
+        if date_from:
+            datetime.strptime(date_from, "%m/%d/%Y").strftime("%Y-%m-%d")
+        if date_to:
+            datetime.strptime(date_to, "%m/%d/%Y").strftime("%Y-%m-%d")
+        reports = models.Report.objects(
+            Q(state__contains=state) & 
+            Q(agency__contains=agency) & 
+            Q(federal_register_date__gte=date_from) &
+            Q(federal_register_date__lte=date_to)).only(
+            'title', 
+            'eis_number',
+            'federal_register_date').order_by(
+            '-federal_register_date')[display_from:display_from+display_num]
+        self.render(
+            "index.html",
+            page_title='EPA EIS DB',
+            page_heading='Hi!',
+            reports = reports,
+            states = states,
+            state_abbrev_list=state_abbrev_list,
+            agencies=agencies,
+            agencies_abbrev_list=agencies_abbrev_list,
             display_from=display_from,
             display_num=display_num
         )
@@ -48,12 +83,18 @@ class SearchHandler(tornado.web.RequestHandler):
             "query": self.get_argument("query", None),
             "state": self.get_argument("state", None),
             "agency": self.get_argument("agency", None),
-            "date_form": self.get_argument("date_from", None),
+            "date_from": self.get_argument("date_from", None),
             "date_to": self.get_argument("date_to", None),
             "include_letters": self.get_argument("include_letters", None),
             "final_eis_only": self.get_argument("final_eis_only", None),
             "display_from": int(self.get_argument("view", 0)),
             "display_num": int(self.get_argument("display", 100))}
+        if search_params['date_from']:
+            search_params['date_from'] = datetime.strptime(
+                search_params['date_from'], "%m/%d/%Y").strftime("%Y-%m-%d")
+        if search_params['date_to']:
+            search_params['date_to'] = datetime.strptime(
+                search_params['date_to'], "%m/%d/%Y").strftime("%Y-%m-%d")
         if not search_params['query']:
             results = None
             total_hits = None
@@ -61,6 +102,9 @@ class SearchHandler(tornado.web.RequestHandler):
             results = self.application.search.search(search_params)
             total_hits = results['total_hits']
             results = results['hits']
+        # for r in results:
+        #     logging.info(r['fields']['title'])
+        #     logging.info(r['fields']['date'])
         self.render(
             "search.html",
             page_title='Search EI Statements',

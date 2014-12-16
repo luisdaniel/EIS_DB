@@ -8,7 +8,10 @@ $(document).ready(function() {
     	$( "#filter-date-range-to" ).datepicker();
 	});
 
-
-
+	$('#report-table').dataTable({
+        "paging":   false,
+        "info":     false,
+        "filter": 	false
+    });
 
 });

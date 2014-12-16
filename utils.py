@@ -111,47 +111,69 @@ agencies_abbrev_list = [
 
 class Search(object):
 	def search(self, search_params):
+		body={
+		    "query": {
+		        "bool":{
+		            "must": [],
+		            "should": [
+		                {
+		                    "match": {
+		                        "title": {
+		                            "query":search_params['query'], 
+		                            "minimum_should_match":"75%",
+		                            "boost":10
+		                        }
+		                    }
+		                }, {
+		                    "has_child": {
+		                        "type":"eis_file",
+		                        "score_mode":"max",
+		                        "query": {
+		                            "match":{
+		                                "file": {
+		                                    "query":search_params['query'],
+		                                    "minimum_should_match":"90%",
+		                                    "boost":1
+		                                }
+		                            }
+		                        }
+		                    }
+		                }
+		            ]
+		        }
+		    }
+		}
+		if search_params['state']:
+		    body['query']['bool']['must'].append(
+		    	{"term": {"state_abbrev":search_params['state']}})
+		if search_params['agency']:
+		    body['query']['bool']['must'].append(
+		    	{"term": {"agency_abbrev":search_params['agency']}})
+		if search_params['date_from'] and search_params['date_to']:
+		    body['query']['bool']['must'].append(
+		        {"range": {"date": {
+		        	"gte":search_params['date_from'], 
+		        	"lte":search_params['date_to']}}})
+		elif search_params['date_from']:
+		    body['query']['bool']['must'].append(
+		        {"range": {"date": {
+		        	"gte":search_params['date_from'], 
+		        	"lte":"2020-01-01"}}})
+		elif search_params['date_to']:
+		    body['query']['bool']['must'].append(
+		        {"range": {"date": {
+		        	"gte":"1900-01-01", 
+		        	"lte":search_params['date_to']}}})
+		if search_params['final_eis_only'] == 'on':
+		    body['query']['bool']['must'].append(
+		    	{"term": {"document_type":"final"}})
+		logging.info(body['query']['bool']['must'])
 		res = es.search(
 		    index="impactstatement", 
-		    fields = ['title', 'state_abbrev', 'agency_abbrev', 'date', 'eis_number'],
-			body={
-			    "query": {
-			        "has_child" : {
-			            "type":"eis_file",
-			            "score_mode":"max",
-			            "query": {
-			                "bool":{
-			                    "should": [
-			                        {
-			                            "match": {
-			                                "title": {
-			                                    "query":search_params['query'], 
-			                                    "minimum_should_match":"75%",
-			                                    "boost":10
-			                                }
-			                            }
-			                        }, {
-			                            "has_child": {
-			                                "type":"eis_file",
-			                                "score_mode":"max",
-			                                "query": {
-			                                    "match":{
-			                                        "file": {
-			                                            "query":search_params['query'],
-			                                            "minimum_should_match":"90%",
-			                                            "boost":1
-			                                        }
-			                                    }
-			                                }
-			                            }
-			                        }
-			                    ]
-			                            
-			                }
-			            }
-			        }
-			    },
-			}, 
+		    doc_type="report",
+		    fields = ['title', 'state_abbrev', 'agency_abbrev', 
+		    	'date', 'eis_number', "document_type"],
+			body=body, 
 		    ignore=[400, 404], 
 		    from_=search_params["display_from"], 
 		    size=search_params['display_num'])
