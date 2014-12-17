@@ -14,7 +14,7 @@ class Report(Document):
 	contact_name = StringField(max_length=100) #Contact name
 	contact_phone = StringField(max_length=35) #Contact Phone number xxx-xxx-xxxx
 	date_uploaded = DateTimeField() #date uploaded to EPA EIS website, usually every 5 days
-	document_type = StringField(max_length=40) #Draft, Final, etc.
+	document_type = StringField() #Draft, Final, etc.
 	eis_number = StringField(max_length=10) #not reliably unique on site, but should be once dupes removed
 	federal_register_date = DateTimeField() #Federal Register Date
 	rating = StringField(max_length=10) #Dunno what this is, but it's short
