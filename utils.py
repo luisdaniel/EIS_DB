@@ -227,7 +227,7 @@ class Tools(object):
 		        "title": titles[r['fields']['eis'][0]],
 		        "file_title": r['fields']['title'][0],
 		        "eis":r['fields']['eis'][0],
-		        "highlights": [h for h in r['highlight']['file']]
+		        "highlights": [h.replace("<em>","<strong>").replace("</em>", "</strong>") for h in r['highlight']['file']]
 		    })
 		return reports
 

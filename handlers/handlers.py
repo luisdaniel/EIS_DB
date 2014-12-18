@@ -30,6 +30,7 @@ class MainHandler(tornado.web.RequestHandler):
         agency = self.get_argument("agency", "")
         date_from = self.get_argument("date_from", "")
         date_to = self.get_argument("date_to", "")
+        # final = self.get_argument("final_eis_only", "")
         if date_from:
             date_from_f = datetime.strptime(date_from, "%m/%d/%Y").strftime("%Y-%m-%d")
         else:
@@ -38,17 +39,21 @@ class MainHandler(tornado.web.RequestHandler):
             date_to_f = datetime.strptime(date_to, "%m/%d/%Y").strftime("%Y-%m-%d")
         else:
             date_to_f = "2030-01-01"
-    	reports = models.Report.objects(
-            Q(state__contains=state) & 
+        # if final =='on':
+        #     doc_type = "final"
+        # else:
+        #     doc_type = ""
+        q = (Q(state__contains=state) & 
             Q(agency__contains=agency) & 
             Q(federal_register_date__gte=date_from_f) &
-            Q(federal_register_date__lte=date_to_f)).only(
+            Q(federal_register_date__lte=date_to_f))
+    	reports = models.Report.objects(q).only(
             'title', 
             'eis_number',
             'federal_register_date').order_by(
-            '-federal_register_date')
-        total_hits = len(reports)
-        reports = reports[display_from:display_from+display_num]
+            '-federal_register_date').skip(display_from).limit(display_num)
+        total_hits = models.Report.objects(q).count()
+        #reports = reports[display_from:display_from+display_num]
         total_reports = models.Report.objects().count()
         self.render(
             "index.html",

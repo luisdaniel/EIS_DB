@@ -25,6 +25,7 @@ class Report(Document):
 	supplemental_info = StringField(max_length=1000) #Supplemental Info
 	title = StringField(max_length=600) #Title of report
 	website = StringField() #website
+	doc_type = ListField()
 
 
 class CommentLetter(EmbeddedDocument):
