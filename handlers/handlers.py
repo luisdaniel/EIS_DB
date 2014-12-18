@@ -156,6 +156,18 @@ class AdvancedSearchHandler(tornado.web.RequestHandler):
             query=query
         )
 
+class PDFViewerHandler(tornado.web.RequestHandler):
+    def get(self, eis, pdf):
+        try:
+            logging.info("getting: " + str(eis))
+            report = models.Report.objects.get(eis_number=eis)
+        except Exception, e:
+            logging.info("Could not get report: " + str(e))
+            self.redirect('/404/')
+        if report:
+            logging.info(pdf)
+        # self.render("pdf_view.html",
+        #     page_title="preview")
 
 class NotFoundHandler(tornado.web.RequestHandler):
     def get(self):
