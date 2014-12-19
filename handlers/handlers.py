@@ -116,7 +116,6 @@ class SearchHandler(tornado.web.RequestHandler):
 class ReportHandler(tornado.web.RequestHandler):
 	def get(self, eis):
 		try:
-			logging.info("getting: " + str(eis))
 			report = models.Report.objects.get(eis_number=eis)
 		except Exception, e:
 			logging.info("Could not get report: " + str(e))
@@ -159,15 +158,21 @@ class AdvancedSearchHandler(tornado.web.RequestHandler):
 class PDFViewerHandler(tornado.web.RequestHandler):
     def get(self, eis, pdf):
         try:
-            logging.info("getting: " + str(eis))
-            report = models.Report.objects.get(eis_number=eis)
+            report = models.Report.objects(
+                eis_number=eis).only('report_files').first()
         except Exception, e:
             logging.info("Could not get report: " + str(e))
             self.redirect('/404/')
         if report:
-            logging.info(pdf)
-        # self.render("pdf_view.html",
-        #     page_title="preview")
+            title = pdf + ".pdf"
+            file_url = ""
+            for f in report.report_files:
+                if f.title == title:
+                    file_url = f.file_url_s3
+        self.render("pdf_view.html",
+            page_title="Preview",
+            page_heading="Preview",
+            file_url=file_url)
 
 class NotFoundHandler(tornado.web.RequestHandler):
     def get(self):

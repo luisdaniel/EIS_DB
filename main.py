@@ -35,7 +35,7 @@ class Application(tornado.web.Application):
             (r"/([0-9]{8})/?", ReportHandler),
             (r"/search/?", SearchHandler),
             (r"/search-files/?", AdvancedSearchHandler),
-            (r"/([0-9]{8})/.*/?", PDFViewerHandler),
+            (r"/([0-9]{8})/(.*)/?", PDFViewerHandler),
             (r'/.*', NotFoundHandler)
         ]
         self.search = Search()
