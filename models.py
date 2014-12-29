@@ -35,6 +35,8 @@ class CommentLetter(EmbeddedDocument):
 	file_url_epa = StringField() #link to file on EPA's site
 	file_url_s3 = StringField() #link to file on S3 bucket
 	last_modified = DateTimeField() #last modified, according to HTTP header
+	title = StringField() #title of report file
+	converted_to_text = BooleanField()
 
 class ReportFile(EmbeddedDocument):
 	content_length = IntField() #Size of the document
@@ -44,6 +46,7 @@ class ReportFile(EmbeddedDocument):
 	file_url_s3 = StringField() #link to file on S3 bucket
 	last_modified = DateTimeField() #last modified, according to HTTP header
 	title = StringField() #title of report file
+	converted_to_text = BooleanField()
 
 
 #Will try to store PDF's as their own documents. 
