@@ -119,7 +119,8 @@ class Search(object):
 		                {
 		                    "match": {
 		                        "title": {
-		                            "query":search_params['query'], 
+		                            "query": search_params['query'], 
+		                            "fuzziness": "AUTO",
 		                            "minimum_should_match":"75%",
 		                            "boost":10
 		                        }
@@ -132,6 +133,7 @@ class Search(object):
 		                            "match":{
 		                                "file": {
 		                                    "query":search_params['query'],
+		                                    "fuzziness": "AUTO",
 		                                    "minimum_should_match":"90%",
 		                                    "boost":1
 		                                }
