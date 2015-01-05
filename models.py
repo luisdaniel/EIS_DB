@@ -36,6 +36,7 @@ class CommentLetter(EmbeddedDocument):
 	file_url_s3 = StringField() #link to file on S3 bucket
 	last_modified = DateTimeField() #last modified, according to HTTP header
 	title = StringField() #title of report file
+	num_pages = IntField() #number of pages
 	converted_to_text = BooleanField()
 
 class ReportFile(EmbeddedDocument):
@@ -46,6 +47,7 @@ class ReportFile(EmbeddedDocument):
 	file_url_s3 = StringField() #link to file on S3 bucket
 	last_modified = DateTimeField() #last modified, according to HTTP header
 	title = StringField() #title of report file
+	num_pages = IntField() #number of pages
 	converted_to_text = BooleanField()
 
 
