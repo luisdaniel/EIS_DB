@@ -6,7 +6,7 @@ from datetime import datetime
 
 class Report(Document):
 	agency = ListField(StringField(max_length=400)) #lead agency listed, can be "MULTI"
-	amended_notice = StringField(max_length=1000) #Ammended notice. 
+	amended_notice = StringField(max_length=1000, default='') #Ammended notice. 
 	amended_notice_date = DateTimeField() #Amended Notice Date
 	comment_due_review_date = DateTimeField() #Comment or Review Due Date
 	comment_letter_date = DateTimeField() #Date of comment letter
@@ -17,12 +17,12 @@ class Report(Document):
 	document_type = StringField() #Draft, Final, etc.
 	eis_number = StringField(max_length=10) #not reliably unique on site, but should be once dupes removed
 	federal_register_date = DateTimeField() #Federal Register Date
-	rating = StringField(max_length=10) #Dunno what this is, but it's short
+	rating = StringField(max_length=10, default='') #Dunno what this is, but it's short
 	report_files = ListField(EmbeddedDocumentField('ReportFile')) #Actual Report PDF
 	report_link = StringField(max_length=100) #URL to EPA's report page. These seem to change
 	search_keywords = ListField(StringField(max_length=30)) #keywords for searching. Rough search for now
 	state = ListField(StringField(max_length=2)) #state, when multiple, input as "00"
-	supplemental_info = StringField(max_length=1000) #Supplemental Info
+	supplemental_info = StringField(max_length=1000, default='') #Supplemental Info
 	title = StringField(max_length=600) #Title of report
 	website = StringField() #website
 	doc_type = ListField()
