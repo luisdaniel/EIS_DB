@@ -50,7 +50,8 @@ class MainHandler(tornado.web.RequestHandler):
     	reports = models.Report.objects(q).only(
             'title', 
             'eis_number',
-            'federal_register_date').order_by(
+            'federal_register_date',
+            'document_type').order_by(
             '-federal_register_date').skip(display_from).limit(display_num)
         total_hits = models.Report.objects(q).count()
         #reports = reports[display_from:display_from+display_num]

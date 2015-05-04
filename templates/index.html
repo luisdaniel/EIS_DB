@@ -7,7 +7,7 @@
 <h1 class="page-header">Environmental Impact Statements</h1>
 <h2 class="sub-header">Reports</h2>
 
-<p>Showing: {{total_hits}} reports (out of {{total_reports}})</p>
+<p>Showing: {{display_num}} reports (out of {{total_reports}})</p>
 <p>Viewing: {{display_from+1}} to {% if display_from+display_num > total_hits %}{{total_hits}}{%else%}{{display_from + display_num}}{%end%}
 	{%if total_hits > display_num %}
 		{% if display_from == 0 or display_from < display_num %}
@@ -72,6 +72,7 @@
 		<th>Date</th>
 		<th>EIS Number</th>
 		<th>Title</th>
+		<th>Type</th>
 	</tr>
 	</thead>
 	<tbody>
@@ -81,6 +82,7 @@
 				<td data-order="{{report.federal_register_date.strftime("%s")}}">{{report.federal_register_date.strftime('%m/%d/%Y')}}</td>
 				<td>{{report.eis_number}}</td>
 				<td><a href="/{{report.eis_number}}/">{{report.title}}</a></td>
+				<td>{{report.document_type}}</td>
 			</tr>
 		{%end %}
 	</tbody>
